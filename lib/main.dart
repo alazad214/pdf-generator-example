@@ -1,5 +1,5 @@
 import 'package:example_flutter/keys.dart';
-import 'package:example_flutter/text_to_pdf.dart';
+import 'package:example_flutter/pdf_download.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -23,6 +23,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: TextToPdfScreen());
+        home: const PdfDownloadScreen());
   }
 }
