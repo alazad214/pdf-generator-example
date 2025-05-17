@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 class HomePage extends StatelessWidget {
   final TextEditingController textController = TextEditingController();
 
+  HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +35,14 @@ class HomePage extends StatelessWidget {
                 if (textToCopy.isNotEmpty) {
                   try {
                     await Clipboard.setData(ClipboardData(text: textToCopy));
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Copied to Clipboard!')),
+                      const SnackBar(content: Text('Copied to Clipboard!')),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to copy to clipboard.')),
+                      const SnackBar(
+                          content: Text('Failed to copy to clipboard.')),
                     );
                   }
                 }

@@ -1,0 +1,2 @@
+C:/AL AZAD/pdf-generator-example/android/app/.cxx/RelWithDebInfo/4cqwyk6d/x86/CMakeFiles/edit_cache.dir
+C:/AL AZAD/pdf-generator-example/android/app/.cxx/RelWithDebInfo/4cqwyk6d/x86/CMakeFiles/rebuild_cache.dir

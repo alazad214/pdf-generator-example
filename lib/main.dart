@@ -1,12 +1,14 @@
 import 'package:example_flutter/keys.dart';
-import 'package:example_flutter/pdf_download.dart';
+import 'package:example_flutter/visiting_card_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = key;
   Stripe.instance.applySettings();
+  await FlutterDownloader.initialize(debug: true);
 
   runApp(const MyApp());
 }
@@ -23,6 +25,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const PdfDownloadScreen());
+        home:   const BusinessCardScreen());
   }
 }

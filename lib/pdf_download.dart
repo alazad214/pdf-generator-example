@@ -1,76 +1,79 @@
-import 'dart:developer';
 import 'dart:io';
-import 'package:dio/dio.dart';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_media_downloader/flutter_media_downloader.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
 
-class PdfDownloadScreen extends StatefulWidget {
-  const PdfDownloadScreen({super.key});
+class PDFViewScreen extends StatefulWidget {
+  const PDFViewScreen({
+    super.key,
+  });
 
   @override
-  State<PdfDownloadScreen> createState() => _PdfDownloadScreenState();
+  State<PDFViewScreen> createState() => _PDFViewScreenState();
 }
 
-class _PdfDownloadScreenState extends State<PdfDownloadScreen> {
-  String _statusMessage = "Press the button to download the PDF";
-  Future<void> downloadPdf(String url) async {
-    try {
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      String savePath = "${appDocDir.path}/downloadedFile.pdf";
+class _PDFViewScreenState extends State<PDFViewScreen> {
+  final _flutterMediaDownloaderPlugin = MediaDownload();
+  String localPath = "";
 
-      Dio dio = Dio();
-      await dio.download(url, savePath);
-
-      setState(() {
-        _statusMessage = "PDF Downloaded to: $savePath";
-      });
-
-      await openFile(savePath);
-    } catch (e) {
-      setState(() {
-        _statusMessage = "Error downloading file: $e";
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    downloadPdf();
   }
 
-  Future<void> openFile(String filePath) async {
+  Future<void> downloadPdf() async {
     try {
-      if (await File(filePath).exists()) {
-        await OpenFilex.open(filePath);
-      } else {
+      // Get the application's document directory
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/downloaded.pdf';
+
+      // Send HTTP GET request to download the PDF
+      final response = await http.get(Uri.parse(
+          'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'));
+
+      if (response.statusCode == 200) {
+        // Write the PDF bytes to a file
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
         setState(() {
-          _statusMessage = "File does not exist";
+          localPath = filePath;
         });
+      } else {
+        log('Failed to load PDF');
       }
     } catch (e) {
-      setState(() {
-        _statusMessage = "Error opening file: $e";
-      });
+      log('Error loading PDF: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    log(_statusMessage);
+    log("===> PDF URL: ${'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'}");
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PDF Download Example'),
+        backgroundColor: Colors.white,
+        toolbarHeight: 70,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: () {},
+        ),
+        title: const Text(
+          'Download PDF',
+        ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(_statusMessage),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                downloadPdf('https://www.orimi.com/pdf-test.pdf');
-              },
-              child: const Text('Download PDF'),
-            ),
-          ],
-        ),
+        child: ElevatedButton(
+            onPressed: () async {
+              _flutterMediaDownloaderPlugin.downloadMedia(context,
+                  'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
+            },
+            child: const Text('Media Download')),
       ),
     );
   }
